@@ -66,7 +66,9 @@ def get_preprocessed_bitext(tokenizer, dataset_name, mode, split, lang_pairs):
 
     prompt = (
         # f"Translate this from {{src_lang}} to {{tgt_lang}}:\n{{src_lang}}: {{src}}\n{{tgt_lang}}:"
-        f"Translate the following text from {{src_lang}} into {{tgt_lang}}.\n{{src_lang}}: {{src}}\n{{tgt_lang}}:"
+        # f"Translate the following text from {{src_lang}} into {{tgt_lang}}.\n{{src_lang}}: {{src}}\n{{tgt_lang}}:"
+        f"Translate the following text from {{src_lang}} into {{tgt_lang}}. Only output the translated text, without any explanation, notes, or extra content.\n{{src_lang}}: {{src}}\n{{tgt_lang}}:"
+
     )
 
     def apply_prompt_template(sample):
