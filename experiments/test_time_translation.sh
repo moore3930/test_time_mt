@@ -24,7 +24,7 @@ evaluate_lang_directions() {
 
     # Define language directions (can customize or pass as parameter if needed)
     # local LANG_DIRECTIONS=("en-de" "en-es" "en-ru" "en-zh" "en-fr" "en-nl" "en-it" "en-pt" "en-ko") # tower-1 langs
-    local LANG_DIRECTIONS=("en-ru" "en-zh") # testing
+    local LANG_DIRECTIONS=("en-zh") # testing
 
     # Define base source and target directories
     local BASE_SRC="/gpfs/work4/0/gus20642/dwu18/project/dispersion4Q/src/llama_recipes/customer_data/${TEST_DATASET}/test"
@@ -81,11 +81,10 @@ CKP_DIR=/gpfs/work4/0/gus20642/dwu18/project/dispersion4Q/experiments/checkpoint
 
 echo "CKP: $CKP_DIR/$BASE_MODEL/dispersion4Q/${SETTING}"
 echo "RESULTS: results/$BASE_MODEL/dispersion4Q/${TEST_DATASET}/${SETTING}-beam5"
-echo "SCORES: scores/$BASE_MODEL/dispersion4Q/${SETTING}/0/wmt-qe-22-test"
 
 # Train
 python -m llama_recipes.finetuning --use_peft --peft_method lora \
-        --model_name Unbabel/$BASE_MODEL \
+        --model_name google/$BASE_MODEL \
         --output_dir $CKP_DIR/$BASE_MODEL/${SETTING} \
         --dataset flores_dataset \
         --batching_strategy padding \
@@ -94,19 +93,19 @@ python -m llama_recipes.finetuning --use_peft --peft_method lora \
         --batch_size_training 32 \
         --val_batch_size 32 \
         --gradient_accumulation_steps 8 \
-        --lang_pairs "en-ru,en-zh" \
+        --lang_pairs "en-zh" \
         --use_wandb
 
 # Test
 for EPOCH in 0; do
     BASE_SYS=results/$BASE_MODEL/${TEST_DATASET}/${SETTING}-beam5/${EPOCH}
-    python inference_formal.py --model_name Unbabel/$BASE_MODEL \
+    python inference_formal.py --model_name google/$BASE_MODEL \
             --peft_model $CKP_DIR/$BASE_MODEL/${SETTING}/${EPOCH} \
             --dataset ${TEST_DATASET} \
             --val_batch_size 8 \
             --do_sample False \
             --output_dir ${BASE_SYS} \
-            --lang_pairs en-ru,en-zh \
+            --lang_pairs en-zh \
             --beam_size 5
     evaluate_lang_directions ${TEST_DATASET} ${BASE_SYS}
 done
