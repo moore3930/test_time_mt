@@ -82,6 +82,7 @@ CKP_DIR=/gpfs/work4/0/gus20642/dwu18/project/dispersion4Q/experiments/checkpoint
 echo "CKP: $CKP_DIR/$BASE_MODEL/dispersion4Q/${SETTING}"
 echo "RESULTS: results/$BASE_MODEL/dispersion4Q/${TEST_DATASET}/${SETTING}-beam5"
 
+:<<!
 # Train
 python -m llama_recipes.finetuning --use_peft --peft_method lora \
         --model_name google/$BASE_MODEL \
@@ -101,6 +102,19 @@ for EPOCH in 0; do
     BASE_SYS=results/$BASE_MODEL/${TEST_DATASET}/${SETTING}-beam5/${EPOCH}
     python inference_formal.py --model_name google/$BASE_MODEL \
             --peft_model $CKP_DIR/$BASE_MODEL/${SETTING}/${EPOCH} \
+            --dataset ${TEST_DATASET} \
+            --val_batch_size 8 \
+            --do_sample False \
+            --output_dir ${BASE_SYS} \
+            --lang_pairs en-zh \
+            --beam_size 5
+    evaluate_lang_directions ${TEST_DATASET} ${BASE_SYS}
+done
+!
+
+for EPOCH in 0; do
+    BASE_SYS=results/$BASE_MODEL/${TEST_DATASET}/${SETTING}-beam5/${EPOCH}
+    python inference_formal.py --model_name google/$BASE_MODEL \
             --dataset ${TEST_DATASET} \
             --val_batch_size 8 \
             --do_sample False \

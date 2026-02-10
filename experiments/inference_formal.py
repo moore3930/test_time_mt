@@ -158,7 +158,16 @@ def main(
 
                 batch_len = batch['input_ids'].shape[-1]
                 batch_output = batch_output[:, batch_len:]
+
+                decoded_inputs = tokenizer.batch_decode(
+                    batch["input_ids"],
+                    skip_special_tokens=True
+                )
+
                 batch_output = [tokenizer.decode(output, skip_special_tokens=True) for output in batch_output]
+
+                print(decoded_inputs[0])
+                print(batch_output[0])
 
                 # replace \n with \t when hallucinating
                 # batch_output = [sent.replace("\n", "\t").strip() for sent in batch_output]
