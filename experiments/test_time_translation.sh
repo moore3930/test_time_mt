@@ -12,7 +12,7 @@
 #SBATCH -o /gpfs/work4/0/gus20642/dwu18/log/out.dispersion.%j.o
 #SBATCH -e /gpfs/work4/0/gus20642/dwu18/log/out.dispersion.%j.e
 
-source activate py38cuda11
+source activate reward-debias
 
 export HF_HUB_CACHE=/gpfs/work4/0/gus20642/dwu18/cache
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
